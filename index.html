@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
   <title>Kaushal Kalas — AI/ML Developer</title>
   <meta name="description" content="Portfolio of Kaushal Kalas, an AI/ML-focused developer building machine-learning systems, experiments, and thoughtful interfaces. Explore projects, skills, and an interactive Debian-style terminal." />
   <meta name="author" content="Kaushal Kalas" />
@@ -13,6 +14,17 @@
   <link rel="icon" type="image/svg+xml" href="./assets/profile-avatar.svg" />
   <link rel="stylesheet" href="./css/fonts.css" />
   <link rel="stylesheet" href="./css/main.css" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme");
+        if (!t) t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -38,9 +50,12 @@
         <a class="nav__link" href="#gallery">Gallery</a>
         <a class="nav__link" href="#contact">Contact</a>
       </nav>
-      <button class="nav__menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay">
-        <span class="nav__menu-label">menu</span>
-      </button>
+      <div class="nav__actions">
+        <button class="nav__theme" id="theme-toggle" type="button" aria-pressed="false">light</button>
+        <button class="nav__menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay">
+          <span class="nav__menu-label">menu</span>
+        </button>
+      </div>
     </div>
   </header>
 

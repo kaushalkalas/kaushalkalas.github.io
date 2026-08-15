@@ -269,6 +269,54 @@
     });
   }
 
+  /* ---------------- theme toggle ---------------- */
+
+  function initTheme() {
+    const btn = $("#theme-toggle");
+    if (!btn) return;
+
+    const root = document.documentElement;
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    let stored = null;
+    try {
+      stored = localStorage.getItem("theme");
+    } catch (e) {
+      stored = null;
+    }
+
+    function apply(theme) {
+      root.setAttribute("data-theme", theme);
+      const isLight = theme === "light";
+      btn.textContent = isLight ? "dark" : "light";
+      btn.setAttribute("aria-pressed", String(isLight));
+      btn.setAttribute("aria-label", "Switch to " + (isLight ? "dark" : "light") + " theme");
+    }
+
+    function current() {
+      const t = root.getAttribute("data-theme");
+      return t === "light" ? "light" : "dark";
+    }
+
+    apply(current());
+
+    btn.addEventListener("click", function () {
+      const next = current() === "light" ? "dark" : "light";
+      apply(next);
+      try {
+        localStorage.setItem("theme", next);
+        stored = next;
+      } catch (e) {}
+    });
+
+    if (!stored) {
+      try {
+        mq.addEventListener("change", function (e) {
+          apply(e.matches ? "light" : "dark");
+        });
+      } catch (e) {}
+    }
+  }
+
   /* ---------------- GSAP motion ---------------- */
 
   function initMotion() {
@@ -335,5 +383,6 @@
         /* data unavailable: page stays readable via static structure */
       });
     initNav();
+    initTheme();
   });
 })();
