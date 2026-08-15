@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kaushal-kalas-portfolio — light theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400..900&amp;display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&amp;display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&amp;display=swap" />
+<style>
+@font-face {
+  font-family: "Unbounded";
+  src: url("fonts/unbounded-400-900.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("fonts/instrument-sans-400-700.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono-400-700.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root{
+  --paper: #f5f2e8;
+  --paper-strong: #ece9df;
+  --ink: #0b0b0c;
+  --muted: #5d5c59;
+  --muted-soft: #8c8a85;
+  --hairline: #e7e4db;
+  --hairline-strong: #d2cfc7;
+  --amber: #f5a623;
+  --amber-hover: #ffc24d;
+  --amber-active: #cf8213;
+  --amber-ink: #824400;
+  --amber-tint: #fffcf0;
+  --amber-border: #ffe49e;
+  --terminal-bg: #08080a;
+  --terminal-text: #ffb200;
+  --terminal-prompt: #ffd200;
+  --display: "Unbounded", "Space Grotesk", system-ui, sans-serif;
+  --body: "Instrument Sans", Inter, system-ui, sans-serif;
+  --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --r-micro: 2px;
+  --r-interactive: 4px;
+  --r-terminal: 8px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+
+.wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+.section{ padding:72px 0; border-top:1px solid var(--hairline); }
+.section:first-of-type{ border-top:0; }
+
+/* nav */
+.nav{
+  position:sticky; top:0; z-index:10;
+  background:rgba(245,242,232,0.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--hairline);
+}
+.nav-inner{ display:flex; align-items:center; justify-content:space-between; height:64px; }
+.nav-brand{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:14px; color:var(--ink); text-decoration:none; }
+.roundel{ width:28px; height:28px; border-radius:50%; background:var(--amber); color:var(--ink); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-weight:700; font-size:13px; }
+.nav-links{ display:flex; gap:4px; list-style:none; }
+.nav-links a{
+  display:inline-block; padding:10px 14px; min-height:44px; line-height:24px;
+  font-size:14px; color:var(--muted); text-decoration:none;
+  border-bottom:2px solid transparent;
+}
+.nav-links a:hover{ color:var(--ink); border-bottom-color:var(--amber); }
+.nav-links a.active{ color:var(--ink); border-bottom-color:var(--amber); }
+
+/* hero */
+.hero{ padding:96px 0 88px; }
+.eyebrow{
+  font-family:var(--mono); font-size:15px; color:var(--amber-ink); font-weight:500;
+  margin-bottom:20px;
+}
+h1.display{
+  font-family:var(--display); font-weight:700; font-size:clamp(38px,6vw,64px);
+  line-height:1.05; letter-spacing:-0.02em; max-width:18ch; margin-bottom:24px;
+}
+.lede{ max-width:52ch; font-size:19px; color:var(--muted); }
+
+/* buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:48px; padding:0 24px; font-family:var(--mono); font-size:14px; font-weight:500;
+  border-radius:var(--r-interactive); cursor:pointer; text-decoration:none;
+  transition:background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.btn-primary{ background:var(--amber); color:var(--ink); border:1px solid var(--amber); }
+.btn-primary:hover{ background:var(--amber-hover); border-color:var(--amber-hover); }
+.btn-primary:active{ background:var(--amber-active); border-color:var(--amber-active); }
+.btn-primary:disabled{ background:var(--hairline-strong); color:var(--muted-soft); border-color:var(--hairline-strong); cursor:not-allowed; }
+.btn-secondary{ background:transparent; color:var(--ink); border:1px solid var(--hairline-strong); }
+.btn-secondary:hover{ border-color:var(--amber); color:var(--amber-ink); }
+.btn-secondary:active{ border-color:var(--amber-active); color:var(--amber-active); }
+.btn-row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+
+/* links */
+a.text-link{ color:var(--ink); text-decoration:none; border-bottom:2px solid var(--amber); }
+a.text-link:hover{ color:var(--amber-ink); }
+
+/* terminal — unchanged, amber phosphor on dark well */
+.terminal{
+  background:var(--terminal-bg); border-radius:var(--r-terminal); overflow:hidden;
+  border:1px solid #1e1e22;
+  box-shadow:0 24px 80px rgba(0,0,0,0.18), 0 0 60px rgba(255,178,0,0.05);
+  font-family:var(--mono); color:var(--terminal-text);
+}
+.terminal-titlebar{
+  display:flex; align-items:center; gap:8px; height:40px; padding:0 16px;
+  background:#141417; border-bottom:1px solid #1e1e22; font-size:13px; color:#7a7a84;
+}
+.dot{ width:8px; height:8px; border-radius:50%; background:#7a7a84; }
+.terminal-title{ flex:1; text-align:center; }
+.terminal-body{ padding:20px 20px 24px; font-size:14px; line-height:1.7; }
+.prompt{ color:var(--terminal-prompt); font-weight:700; }
+.cursor{ display:inline-block; width:8px; height:16px; background:var(--terminal-text); vertical-align:-2px; animation:blink 1s steps(1) infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+
+/* cards */
+.card-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.card{
+  background:var(--paper-strong); border:1px solid var(--hairline); border-radius:var(--r-interactive);
+  padding:24px; transition:border-color 160ms ease, box-shadow 160ms ease;
+}
+.card:hover{ border-color:var(--amber); box-shadow:0 1px 2px rgba(0,0,0,0.4); }
+.card-meta{ font-family:var(--mono); font-size:12px; color:var(--muted-soft); margin-bottom:8px; }
+.card-title{ font-family:var(--display); font-size:18px; font-weight:600; margin-bottom:8px; }
+.card-desc{ font-size:14px; color:var(--muted); margin-bottom:16px; }
+.tags{ display:flex; flex-wrap:wrap; gap:6px; }
+.tag{
+  font-family:var(--mono); font-size:12px; font-weight:500;
+  background:var(--amber-tint); color:var(--amber-ink); border:1px solid var(--amber-border);
+  border-radius:var(--r-micro); padding:2px 8px;
+}
+
+/* section header */
+.section-head{ margin-bottom:32px; }
+.section-title{ font-family:var(--display); font-size:28px; font-weight:600; letter-spacing:-0.01em; }
+
+/* contact rows */
+.contact-rows{ border-top:1px solid var(--hairline); }
+.contact-row{
+  display:flex; justify-content:space-between; align-items:center; gap:16px;
+  min-height:48px; padding:0 8px; border-bottom:1px solid var(--hairline);
+  font-size:16px; color:var(--ink); text-decoration:none;
+}
+.contact-row:hover{ color:var(--amber-ink); }
+.contact-row .domain{ font-family:var(--mono); font-size:13px; color:var(--muted-soft); }
+
+/* footer */
+.footer{ padding:32px 0 48px; border-top:1px solid var(--hairline); }
+.footer p{ font-family:var(--mono); font-size:12px; color:var(--muted-soft); }
+
+/* token strip */
+.tokens{ display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-top:24px; }
+.token{ border:1px solid var(--hairline); border-radius:var(--r-interactive); padding:12px; background:var(--paper); }
+.token .swatch{ height:40px; border-radius:var(--r-micro); border:1px solid rgba(0,0,0,0.08); margin-bottom:8px; }
+.token .tname{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+.token .tval{ font-family:var(--mono); font-size:11px; color:var(--muted-soft); }
+
+.note{
+  margin-top:12px; padding:12px 16px; background:var(--amber-tint); border:1px solid var(--amber-border);
+  border-radius:var(--r-interactive); font-size:14px; color:var(--amber-ink);
+}
+
+@media (max-width:640px){
+  .nav-links{ display:none; }
+  .hero{ padding:64px 0; }
+  .section{ padding:56px 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" data-od-id="light-nav">
+  <div class="wrap nav-inner">
+    <a class="nav-brand" href="#top"><span class="roundel">K</span> kaushal@debian</a>
+    <ul class="nav-links">
+      <li><a href="#buttons" class="active">Skills</a></li>
+      <li><a href="#terminal">Projects</a></li>
+      <li><a href="#cards">Gallery</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero" data-od-id="light-hero">
+    <p class="eyebrow">$ whoami</p>
+    <h1 class="display">Kaushal Kalas</h1>
+    <p class="lede">AI/ML engineer who turns research into shippable systems. This page shows the same amber-gold voltage deployed on the light canvas — the yellow stays the signal, the surfaces just invert.</p>
+  </section>
+
+  <section class="section" data-od-id="light-tokens">
+    <div class="section-head">
+      <p class="eyebrow">$ cat tokens/light.json</p>
+      <h2 class="section-title">Light canvas, same voltage</h2>
+      <p class="lede" style="font-size:15px;margin-top:8px;">Derived by the engine from the same seed as the dark kit. Amber <code style="font-family:var(--mono);color:var(--amber-ink)">#F5A623</code> is the primary in both themes.</p>
+    </div>
+    <div class="tokens">
+      <div class="token"><div class="swatch" style="background:#f5f2e8"></div><div class="tname">paper · bg</div><div class="tval">#F5F2E8</div></div>
+      <div class="token"><div class="swatch" style="background:#ece9df"></div><div class="tname">surface</div><div class="tval">#ECE9DF</div></div>
+      <div class="token"><div class="swatch" style="background:#0b0b0c"></div><div class="tname">ink · fg</div><div class="tval">#0B0B0C</div></div>
+      <div class="token"><div class="swatch" style="background:#5d5c59"></div><div class="tname">muted</div><div class="tval">#5D5C59</div></div>
+      <div class="token"><div class="swatch" style="background:#e7e4db"></div><div class="tname">hairline</div><div class="tval">#E7E4DB</div></div>
+      <div class="token"><div class="swatch" style="background:#f5a623"></div><div class="tname">amber · accent</div><div class="tval">#F5A623</div></div>
+      <div class="token"><div class="swatch" style="background:#ffc24d"></div><div class="tname">amber hover</div><div class="tval">#FFC24D</div></div>
+      <div class="token"><div class="swatch" style="background:#cf8213"></div><div class="tname">amber active</div><div class="tval">#CF8213</div></div>
+      <div class="token"><div class="swatch" style="background:#824400"></div><div class="tname">amber ink</div><div class="tval">#824400</div></div>
+      <div class="token"><div class="swatch" style="background:#fffcf0"></div><div class="tname">amber tint</div><div class="tval">#FFFCF0</div></div>
+      <div class="token"><div class="swatch" style="background:#ffe49e"></div><div class="tname">amber border</div><div class="tval">#FFE49E</div></div>
+      <div class="token"><div class="swatch" style="background:#08080a"></div><div class="tname">terminal bg</div><div class="tval">#08080A</div></div>
+    </div>
+    <p class="note">Rule: on paper, amber is never link text. It is a button fill with ink inside (9.71:1, AAA), an underline or border, a focus ring, and a tag tint. The terminal keeps its dark well and amber phosphor unchanged.</p>
+  </section>
+
+  <section class="section" data-od-id="light-buttons">
+    <div class="section-head">
+      <p class="eyebrow">$ ls ~/actions</p>
+      <h2 class="section-title">Buttons</h2>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button">View projects</button>
+      <button class="btn btn-primary" type="button" disabled>Download resume</button>
+      <button class="btn btn-secondary" type="button">Read the blog</button>
+      <a class="btn btn-secondary" href="#cards">GitHub</a>
+    </div>
+    <p class="note">Primary: amber fill + ink text, hover steps to <span style="font-family:var(--mono)">#FFC24D</span>, active to <span style="font-family:var(--mono)">#CF8213</span>. One primary per viewport; the rest are secondary or text links.</p>
+  </section>
+
+  <section class="section" data-od-id="light-terminal">
+    <div class="section-head">
+      <p class="eyebrow">$ ./terminal --theme=paper</p>
+      <h2 class="section-title">The terminal is an object, not a theme</h2>
+    </div>
+    <div class="terminal" role="log" aria-live="polite">
+      <div class="terminal-titlebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="terminal-title">kaushal@debian:~ — bash</span><span>copy</span></div>
+      <div class="terminal-body">
+        <div><span class="prompt">kaushal@debian:~$</span> ./welcome --theme=light</div>
+        <div>Terminal stays amber-on-dark on both canvases — the same object,<br>same phosphor <span style="color:var(--terminal-prompt)">#FFB200</span>, same prompt <span style="color:var(--terminal-prompt)">#FFD200</span>.<span class="cursor"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-od-id="light-cards">
+    <div class="section-head">
+      <p class="eyebrow">$ ls projects</p>
+      <h2 class="section-title">Cards on paper</h2>
+    </div>
+    <div class="card-grid">
+      <article class="card" data-od-id="light-card-repro">
+        <p class="card-meta">projects/repro-llm · 2025</p>
+        <h3 class="card-title">Repro-driven LLM eval</h3>
+        <p class="card-desc">A harness that turns papers into pinned benchmarks before any fine-tune begins.</p>
+        <div class="tags"><span class="tag">python</span><span class="tag">ml</span><span class="tag">evaluation</span></div>
+      </article>
+      <article class="card" data-od-id="light-card-latency">
+        <p class="card-meta">projects/latency-toolkit · 2025</p>
+        <h3 class="card-title">Inference latency toolkit</h3>
+        <p class="card-desc">Per-op profiling for serving stacks, focused on the tail, not the mean.</p>
+        <div class="tags"><span class="tag">rust</span><span class="tag">serving</span><span class="tag">observability</span></div>
+      </article>
+      <article class="card" data-od-id="light-card-rag">
+        <p class="card-meta">projects/rag-notes · 2024</p>
+        <h3 class="card-title">Field notes on RAG</h3>
+        <p class="card-desc">What actually survives production: chunking, reranking, and honest eval.</p>
+        <div class="tags"><span class="tag">nlp</span><span class="tag">rag</span></div>
+      </article>
+    </div>
+    <p class="note">Tag chips use the amber tint fill with dark amber ink — legible on paper while staying on-brand. Card hover lifts the border to amber with the single shadow tier.</p>
+  </section>
+
+  <section class="section" data-od-id="light-contact">
+    <div class="section-head">
+      <p class="eyebrow">$ echo "say hi"</p>
+      <h2 class="section-title">Contact</h2>
+    </div>
+    <div class="contact-rows">
+      <a class="contact-row" href="mailto:hi@kaushalkalas.dev"><span>Email</span><span class="domain">hi@kaushalkalas.dev</span></a>
+      <a class="contact-row" href="#top"><span>GitHub</span><span class="domain">github.com/kaushal</span></a>
+      <a class="contact-row" href="#top"><span>LinkedIn</span><span class="domain">in/kaushalkalas</span></a>
+    </div>
+    <p style="margin-top:16px;font-size:15px;color:var(--muted);">Text links carry a 2px amber underline (<a class="text-link" href="#top">like this</a>) — the amber is structural, never the text color, on paper.</p>
+  </section>
+
+</main>
+
+<footer class="footer" data-od-id="light-footer">
+  <div class="wrap">
+    <p>kaushal@debian:~$ echo "© 2026 Kaushal Kalas — built with the light inversion of the same system"</p>
+  </div>
+</footer>
+
+</body>
+</html>

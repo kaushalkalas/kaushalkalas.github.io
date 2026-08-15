@@ -1,0 +1,169 @@
+{
+  "profile": {
+    "name": "Kaushal Kalas",
+    "title": "AI/ML Developer",
+    "tagline": "I build machine-learning systems that solve real problems, and I like understanding how they work under the hood.",
+    "about": [
+      "I am an AI/ML-focused developer currently pursuing my engineering degree, where I spend most of my time turning ideas into working models — from natural-language systems to computer-vision experiments.",
+      "I care about the full lifecycle of a project: framing the problem, cleaning the data, training the model, and shipping something people can actually use.",
+      "Right now I am learning deep learning at scale and exploring how LLMs can be grounded in real, verifiable data. Long term, I want to build intelligent systems that are useful, honest, and well-engineered.",
+      "I enjoy hackathons, open-source collaboration, and the messy middle of any technical problem — the part where it stops being a tutorial and starts being real."
+    ],
+    "learning": "Deep learning at scale, LLM grounding and retrieval, and production ML tooling.",
+    "interests": ["AI/ML research", "System design", "Hackathons", "Open source", "Reading", "Football"],
+    "avatar": "./assets/profile-avatar.svg",
+    "location": "India",
+    "resume": {
+      "file": "./assets/resume/Kaushal_Kalas_Resume.pdf",
+      "label": "Kaushal_Kalas_Resume.pdf",
+      "lastUpdated": "2026-01"
+    }
+  },
+  "skills": {
+    "Languages": ["Python", "C++", "JavaScript", "SQL", "Java"],
+    "Web Development": ["HTML", "CSS", "JavaScript", "React", "Node.js", "REST APIs"],
+    "AI / Machine Learning": ["PyTorch", "TensorFlow", "scikit-learn", "NumPy", "Pandas", "Hugging Face", "LangChain", "OpenCV"],
+    "Databases": ["MySQL", "PostgreSQL", "MongoDB"],
+    "Tools & Platforms": ["Git", "GitHub", "Linux", "Docker", "VS Code", "Figma"],
+    "Other": ["Prompt engineering", "Data visualization", "Technical writing"]
+  },
+  "projects": [
+    {
+      "name": "DocSage — RAG-powered document assistant",
+      "featured": true,
+      "description": "A retrieval-augmented question-answering system that answers questions strictly from a user's own documents, with citations and no hallucinated answers.",
+      "problem": "Generic chatbots invent answers when asked about private or niche documents; teams needed a system that could only answer from their own material.",
+      "features": ["Embedding-based retrieval", "Chunked vector search", "Citation-grounded responses", "Source highlighting"],
+      "stack": ["Python", "LangChain", "FAISS", "Hugging Face", "Streamlit"],
+      "github": "https://github.com/kaushalkalas/docsage",
+      "live": "",
+      "year": 2025
+    },
+    {
+      "name": "CampusPlanner — smart timetable scheduler",
+      "featured": false,
+      "description": "A constraint-based scheduler that generates conflict-free college timetables, saving departments hours of manual arrangement each semester.",
+      "problem": "Department staff spent days hand-fitting rooms, faculty, and batches into a timetable; small changes cascaded into large conflicts.",
+      "features": ["Constraint propagation", "Room/faculty conflict detection", "CSV import and export", "Manual override support"],
+      "stack": ["Python", "Pandas", "Constraint-solving", "Flask"],
+      "github": "https://github.com/kaushalkalas/campusplanner",
+      "live": "",
+      "year": 2025
+    },
+    {
+      "name": "SignNet — sign language recognition",
+      "featured": false,
+      "description": "A computer-vision model that recognizes common ISL hand gestures in real time, built as a hackathon prototype and improved over two months.",
+      "problem": "Hearing people rarely know sign language; a lightweight real-time recognizer could bridge everyday communication.",
+      "features": ["Real-time hand landmark tracking", "Gesture classification", "Live webcam inference", "Custom dataset pipeline"],
+      "stack": ["Python", "OpenCV", "MediaPipe", "TensorFlow"],
+      "github": "https://github.com/kaushalkalas/signnet",
+      "live": "",
+      "year": 2024
+    },
+    {
+      "name": "PriceScope — ML price forecaster",
+      "featured": false,
+      "description": "A time-series experiment forecasting product prices using gradient-boosted trees, with honest error reporting and feature analysis.",
+      "problem": "Small sellers price by guesswork; even a modestly accurate forecast with uncertainty bands is more useful than intuition.",
+      "features": ["Time-series feature engineering", "XGBoost forecasting", "Uncertainty band reporting", "Model comparison notebook"],
+      "stack": ["Python", "XGBoost", "scikit-learn", "Pandas", "Jupyter"],
+      "github": "https://github.com/kaushalkalas/pricescope",
+      "live": "",
+      "year": 2024
+    }
+  ],
+  "experience": [
+    {
+      "role": "Machine Learning Intern",
+      "organization": "AI Research Lab",
+      "timeline": "Summer 2025",
+      "responsibilities": ["Built data pipelines for a text-classification research project", "Ran and compared baseline models against SOTA approaches", "Documented experiments for the team's reproducibility report"],
+      "outcomes": "Cut experiment turnaround by ~30% with a reusable evaluation harness."
+    },
+    {
+      "role": "Open Source Contributor",
+      "organization": "Various projects",
+      "timeline": "2024 – present",
+      "responsibilities": ["Contributed bug fixes and documentation to ML libraries", "Reviewed community PRs and triaged issues"],
+      "outcomes": "Merged contributions across multiple repositories; maintainer of two small experiment repos."
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Tech in Computer Science",
+      "institution": "Government College of Engineering",
+      "location": "Maharashtra, India",
+      "timeline": "2022 – 2026",
+      "specialization": "Specialization in AI/ML electives",
+      "highlights": ["GPA: 8.9/10", "Coursework: ML, Deep Learning, DBMS, OS, Data Structures, Statistics"]
+    }
+  ],
+  "achievements": [
+    {
+      "title": "1st Runner-up — National AI Hackathon",
+      "issuer": "TechFest 2025",
+      "date": "Jan 2025",
+      "context": "Built a document Q&A prototype over a weekend with a two-person team.",
+      "link": ""
+    },
+    {
+      "title": "Google Cloud Certified — Associate Cloud Engineer",
+      "issuer": "Google",
+      "date": "2024",
+      "context": "Validated practical cloud fundamentals for ML workloads.",
+      "link": ""
+    },
+    {
+      "title": "Top 10 — Campus ML Challenge",
+      "issuer": "University-level competition",
+      "date": "2024",
+      "context": "Ranked among the top 10 of 120+ teams in a predictive-modeling challenge.",
+      "link": ""
+    }
+  ],
+  "gallery": [
+    {
+      "id": 1,
+      "title": "Mumbai Hacks 2025",
+      "caption": "A memorable weekend building and collaborating with the team.",
+      "image": "./assets/gallery/mumbai-hacks.svg"
+    },
+    {
+      "id": 2,
+      "title": "College Tech Fest",
+      "caption": "Running the AI booth and demoing SignNet to visitors.",
+      "image": "./assets/gallery/techfest.svg"
+    },
+    {
+      "id": 3,
+      "title": "Late-night training run",
+      "caption": "The classic: watching a training curve and waiting.",
+      "image": "./assets/gallery/training-run.svg"
+    },
+    {
+      "id": 4,
+      "title": "Reading",
+      "caption": "One of my reading moments — books on ML and systems.",
+      "image": "./assets/gallery/reading.svg"
+    },
+    {
+      "id": 5,
+      "title": "Hackathon pitch",
+      "caption": "Presenting the weekend build to the judging panel.",
+      "image": "./assets/gallery/pitch.svg"
+    },
+    {
+      "id": 6,
+      "title": "Team lunch",
+      "caption": "The people are the best part of building things.",
+      "image": "./assets/gallery/team-lunch.svg"
+    }
+  ],
+  "contact": {
+    "email": { "label": "hello@kaushalkalas.dev", "href": "mailto:hello@kaushalkalas.dev" },
+    "github": { "label": "github.com/kaushalkalas", "href": "https://github.com/kaushalkalas" },
+    "linkedin": { "label": "linkedin.com/in/kaushalkalas", "href": "https://linkedin.com/in/kaushalkalas" },
+    "x": { "label": "x.com/kaushalkalas", "href": "https://x.com/kaushalkalas" }
+  }
+}

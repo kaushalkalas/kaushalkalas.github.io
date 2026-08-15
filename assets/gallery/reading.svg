@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Open book placeholder">
+  <rect width="640" height="480" fill="#0b0b0c"/>
+  <rect x="180" y="60" width="280" height="360" rx="4" fill="#141417" stroke="#26262b"/>
+  <line x1="320" y1="60" x2="320" y2="420" stroke="#26262b"/>
+  <rect x="205" y="100" width="95" height="12" rx="2" fill="#f5a623" opacity="0.85"/>
+  <rect x="205" y="125" width="95" height="8" rx="2" fill="#9a9aa3"/>
+  <rect x="205" y="142" width="80" height="8" rx="2" fill="#7a7a84"/>
+  <rect x="205" y="159" width="90" height="8" rx="2" fill="#7a7a84"/>
+  <rect x="205" y="176" width="70" height="8" rx="2" fill="#7a7a84"/>
+  <rect x="340" y="100" width="95" height="8" rx="2" fill="#9a9aa3"/>
+  <rect x="340" y="117" width="90" height="8" rx="2" fill="#7a7a84"/>
+  <rect x="340" y="134" width="95" height="8" rx="2" fill="#7a7a84"/>
+  <rect x="340" y="151" width="80" height="8" rx="2" fill="#7a7a84"/>
+  <rect x="205" y="320" width="230" height="70" rx="4" fill="#08080a"/>
+  <text x="320" y="352" font-family="monospace" font-size="13" fill="#f5a623" text-anchor="middle">"attention is all you need"</text>
+  <text x="320" y="374" font-family="monospace" font-size="12" fill="#7a7a84" text-anchor="middle">— page 187</text>
+</svg>

@@ -1,0 +1,187 @@
+{
+  "name": "kaushal-kalas-portfolio",
+  "tagline": "A dark, developer-oriented single-page portfolio whose single job is to communicate an AI/ML-focused profile within the first few seconds and make the visit memorable.",
+  "description": "A dark, developer-oriented single-page portfolio for AI/ML developer Kaushal Kalas. Near-black ink canvas, a single warm amber-gold voltage, and an amber phosphor Debian-style terminal as the signature artifact. Every section wears a $-command eyebrow that maps 1:1 to a working terminal command — the page is the terminal's manual, and the terminal is a shortcut for the page. Structure comes from 1px hairlines dividing dark bands from darker bands, not from stacked shadows; elevation is capped at one shadow tier plus a single terminal glow. Display restraint is the personality of the page.",
+  "sourceUrl": "designmd://kaushal-kalas-portfolio",
+  "seed": {
+    "fontFamilyCode": "'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace",
+    "borderRadius": 2,
+    "sizeUnit": 4,
+    "sizeStep": 4,
+    "controlHeight": 48,
+    "lineWidth": 1
+  },
+  "logo": {
+    "primary": null,
+    "alternates": [],
+    "notes": "No logo file was supplied in the pasted DESIGN.md. The brand's logo moment is the signal-yellow roundel (28px circle, ink mono 'K') in the nav, plus the terminal prompt line `kaushal@debian:~$ ▊` — the system's type-plus-color lockup. Do not substitute a generated mark."
+  },
+  "colors": [
+    {
+      "role": "background",
+      "hex": "#0b0b0c",
+      "oklch": "oklch(0.150 0.002 286.1)",
+      "name": "Ink",
+      "usage": "page canvas (dark floor; near-black with a hair of blue so it never reads warm brown)"
+    },
+    {
+      "role": "surface",
+      "hex": "#141417",
+      "oklch": "oklch(0.193 0.006 285.8)",
+      "name": "Surface",
+      "usage": "cards, terminal chrome, raised fills (1-2 steps off ink; separation comes from hairlines, not brightness)"
+    },
+    {
+      "role": "foreground",
+      "hex": "#f5f2e8",
+      "oklch": "oklch(0.961 0.014 93.0)",
+      "name": "Paper",
+      "usage": "dominant text on dark — headlines, hero, titles (warm off-white tinted toward the yellow family; ~16:1 on ink)"
+    },
+    {
+      "role": "muted",
+      "hex": "#9a9aa3",
+      "oklch": "oklch(0.689 0.013 286.1)",
+      "name": "Muted",
+      "usage": "meta rows, inactive nav, tags, titlebar labels (~6.5:1 on surface)"
+    },
+    {
+      "role": "border",
+      "hex": "#26262b",
+      "oklch": "oklch(0.271 0.009 285.8)",
+      "name": "Hairline",
+      "usage": "default 1px border — section dividers, card borders, terminal outline"
+    },
+    {
+      "role": "accent",
+      "hex": "#f5a623",
+      "oklch": "oklch(0.784 0.159 73.0)",
+      "name": "Primary",
+      "usage": "warm amber-gold — the single brand color. CTA fills, inline links, active nav, focus rings, nav roundel, terminal prompt prefix. Shifted from pure yellow (#FFD200) to warm amber for dual-theme usability and premium Gen-Z aesthetic; 9.71:1 on ink (AAA), works as button fill on light backgrounds with dark text inside."
+    },
+    {
+      "role": "accent-secondary",
+      "hex": "#e08f1a",
+      "oklch": "oklch(0.717 0.151 68.3)",
+      "name": "Primary Active",
+      "usage": "hover/press step — deeper amber (8.65:1 on ink); used on button hover/active states. Slightly more orange-shifted to communicate depth and interactivity."
+    }
+  ],
+  "typography": {
+    "display": {
+      "family": "Unbounded",
+      "fallbacks": [
+        "Space Grotesk",
+        "system-ui",
+        "sans-serif"
+      ],
+      "weights": [
+        400,
+        600,
+        700
+      ],
+      "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Unbounded:wght@400..900&display=swap",
+      "notes": "Wide technical geometric sans. Rationed to the two loud moments: the hero name at weight 700 and one section title per band at 600. Never a body-text role."
+    },
+    "body": {
+      "family": "Instrument Sans",
+      "fallbacks": [
+        "Inter",
+        "system-ui",
+        "sans-serif"
+      ],
+      "weights": [
+        400,
+        500,
+        700
+      ],
+      "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap",
+      "notes": "Neutral modern humanist sans for all running text, cards, and nav. Deliberately quiet."
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "fallbacks": [
+        "IBM Plex Mono",
+        "ui-monospace",
+        "SFMono-Regular",
+        "monospace"
+      ],
+      "weights": [
+        400,
+        500
+      ],
+      "googleFontsUrl": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&display=swap",
+      "notes": "The machine layer — terminal output, $-eyebrows, meta rows, tags, buttons, dates. If it is data about Kaushal, it is mono; if it is voice, it is Instrument Sans."
+    }
+  },
+  "voice": {
+    "adjectives": [
+      "quiet",
+      "technical",
+      "restrained",
+      "luminous",
+      "precise",
+      "confident"
+    ],
+    "tone": "Quiet, technical, and self-assured — a Debian manual, not a marketing site. Short machine-precise declaratives; the terminal is the voice and its $ commands are the table of contents. The warm amber accent adds a human glow to the technical precision — luminous, not cold.",
+    "messagingPillars": [
+      "A dark, developer-oriented single-page portfolio whose single job is to communicate an AI/ML-focused profile within the first few seconds and make the visit memorable.",
+      "One warm amber-gold voltage (#F5A623) carries every interactive signal: CTAs, links, active nav states, focus rings, and the terminal prompt. There is no second brand color. The orange undertone makes it premium and contemporary — less 'caution tape' than pure yellow, more 'golden hour.'",
+      "Dual-theme by design: the amber-gold (#F5A623) is the primary accent on both the ink floor and the paper inversion (engine-verified: the light derivation keeps #F5A623 as primary). On light, amber is structural — button fills with ink text, amber underlines and borders, amber-tinted tags, dark amber eyebrows (#824400) — never full-strength amber as link text. The dark terminal object is unchanged in both themes.",
+      "The terminal is the thesis: a Debian-style simulated terminal sits directly under the hero, and every section below opens with a $-command eyebrow that maps 1:1 to a working terminal command — you can scroll or type to the same content.",
+      "Structure comes from 1px hairlines dividing dark bands from darker bands, not from stacked shadows; elevation is capped at one shadow tier plus the terminal's dedicated amber glow.",
+      "Type is split by role: Unbounded carries the two loud moments (hero name, section titles); Instrument Sans carries the human voice; JetBrains Mono owns everything machine-flavored."
+    ],
+    "vocabulary": {
+      "use": [
+        "$-eyebrows that map 1:1 to working terminal commands",
+        "Warm amber-gold (#F5A623) for interactive signals and the terminal prompt only (one or two amber moments per viewport)",
+        "JetBrains Mono for machine-flavored content — eyebrows, meta, tags, buttons, the whole terminal",
+        "Sentence-case action verbs on button labels ('View projects', 'Download resume')",
+        "Terminal output as real DOM text — selectable, copyable, screen-reader-accessible, aria-live='polite'",
+        "On light backgrounds: use amber as button fills and border accents with dark text inside, not as link text color"
+      ],
+      "avoid": [
+        "A second accent color, gradients, or emoji icons",
+        "Pill shapes / border-radius: 9999px",
+        "Numbering (01/02/03), percentage skill bars, icon walls",
+        "Styling the rest of the site like a terminal — the terminal is an object, not a theme",
+        "Fake terminal behavior — no arbitrary command execution, no fake sudo prompts",
+        "Animating more than 600ms, or transforming anything but opacity and transform",
+        "Amber text on light backgrounds — use amber as fills/borders with dark text instead"
+      ]
+    }
+  },
+  "imagery": {
+    "style": "Photographic and dark. Every gallery image is a real 4:3 artifact (reserved aspect ratio, object-fit cover, lazy-loaded, caption beneath). The page itself carries no decorative imagery — the amber terminal is the single ornament.",
+    "subjects": [
+      "project screenshots in a reserved 4:3 frame",
+      "terminal and code artifacts",
+      "AI/ML work samples"
+    ],
+    "treatment": "Muted and captioned; hover steps the hairline border toward primary. No zoom, no overlay, no animation — captions stay readable. Meaningful alt text on every image; captions are supplementary, never the only description.",
+    "avoid": [
+      "icons or emoji as functional elements",
+      "hand-drawn SVG scenes",
+      "photographs of faces as decoration",
+      "images with baked-in text or UI chrome",
+      "invented metrics, percentage bars, or fake measurements"
+    ],
+    "samples": []
+  },
+  "layout": {
+    "radius": "2px",
+    "borderWeight": "1px",
+    "spacing": "4px base unit (2px micro-step for tag and label gutters); 128px section rhythm on desktop, 72px below 640px",
+    "postureRules": [
+      "Component kit must cover: nav, menu-overlay, button-primary (+ hover/active/disabled), button-secondary (+ hover), terminal-window, terminal-titlebar, terminal-output, prompt-line, project-card, featured-card, card-meta, card-description, tag-chip, section-header, section-eyebrow, divider, divider-soft, gallery-item, contact-row, footer.",
+      "Radius language: 2px on tag chips and micro-labels, 4px on interactive elements (buttons, cards, gallery items, terminal output well), 8px on the terminal window only. No pill shapes and no border-radius: 9999px anywhere.",
+      "Elevation: one shadow tier (0 1px 2px rgba(0,0,0,0.4) card hover) plus the terminal's dedicated glow (0 24px 80px rgba(0,0,0,0.6), 0 0 60px rgba(255,178,0,0.06)). Nothing else casts a shadow.",
+      "Single accent: warm amber-gold #F5A623 for every CTA, link, active state, and focus ring — plus the terminal prompt marker. No second brand color; the amber #FFB200 is the terminal phosphor only.",
+      "Dark-first canvas: ink #0B0B0C floor with paper #F5F2E8 text is the default; the light inversion (ink ⇄ paper) is shipped as light-theme.html and keeps the amber voltage. On light, amber is structural — button fills/borders with dark text on light backgrounds, never as link text.",
+      "Touch targets: primary/secondary CTAs >= 48x48px; contact rows full-width at 48px+; nav links padded to 44px; terminal input 40px min height with up/down history.",
+      "Focus: 2px amber-gold outline + 2px offset via :focus-visible on every interactive element — the amber is the focus language of the whole site.",
+      "Light-theme amber usage: amber as button background with dark (#0B0B0C) text inside (9.71:1 contrast); amber as underline/border accent on links (not text color); amber focus rings on light (decorative, no contrast requirement)."
+    ]
+  }
+}
