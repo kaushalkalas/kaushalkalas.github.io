@@ -11,9 +11,12 @@
   <meta property="og:title" content="Kaushal Kalas — AI/ML Developer" />
   <meta property="og:description" content="AI/ML-focused developer. Projects, skills, education, and an interactive Debian-style terminal." />
   <meta property="og:url" content="https://kaushalkalas.github.io/portfolio/" />
-  <link rel="icon" type="image/svg+xml" href="./assets/profile-avatar.svg" />
-  <link rel="stylesheet" href="./css/fonts.css" />
-  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="icon" type="image/svg+xml" href="./assets/profile-avatar-animated.svg" />
+<link rel="stylesheet" href="./css/fonts.css?v=3" />
+<link rel="stylesheet" href="./css/main.css?v=8" />
+<link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="./assets/fonts/unbounded-400-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="./assets/fonts/instrument-sans-400-700.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="./assets/fonts/jetbrains-mono-400-700.woff2" />
   <script>
     (function () {
       try {
@@ -27,6 +30,7 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#top" tabindex="0">Skip to main content</a>
 
   <!-- Mobile menu overlay -->
   <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
@@ -34,6 +38,8 @@
       <a class="menu-overlay__link" href="#about"><span class="menu-overlay__eyebrow">$ about</span>About</a>
       <a class="menu-overlay__link" href="#skills"><span class="menu-overlay__eyebrow">$ skills</span>Skills</a>
       <a class="menu-overlay__link" href="#projects"><span class="menu-overlay__eyebrow">$ projects</span>Projects</a>
+      <a class="menu-overlay__link" href="#education"><span class="menu-overlay__eyebrow">$ education</span>Education</a>
+      <a class="menu-overlay__link" href="#extracurricular"><span class="menu-overlay__eyebrow">$ extracurricular</span>Extracurricular</a>
       <a class="menu-overlay__link" href="#gallery"><span class="menu-overlay__eyebrow">$ gallery</span>Gallery</a>
       <a class="menu-overlay__link" href="#contact"><span class="menu-overlay__eyebrow">$ contact</span>Contact</a>
     </nav>
@@ -47,11 +53,13 @@
         <a class="nav__link" href="#about">About</a>
         <a class="nav__link" href="#skills">Skills</a>
         <a class="nav__link" href="#projects">Projects</a>
+        <a class="nav__link" href="#education">Education</a>
+        <a class="nav__link" href="#extracurricular">Extracurricular</a>
         <a class="nav__link" href="#gallery">Gallery</a>
         <a class="nav__link" href="#contact">Contact</a>
       </nav>
       <div class="nav__actions">
-        <button class="nav__theme" id="theme-toggle" type="button" aria-pressed="false">light</button>
+        <button class="nav__theme" id="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme"><svg class="nav__theme-icon nav__theme-icon--sun" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M7 17.2l-1.6 1.6" /></svg><svg class="nav__theme-icon nav__theme-icon--moon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7.2 7.2 0 0 0 21 12.8z" /></svg></button>
         <button class="nav__menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay">
           <span class="nav__menu-label">menu</span>
         </button>
@@ -65,17 +73,17 @@
     <section class="hero" aria-label="Introduction">
       <div class="hero__inner">
         <div class="hero__copy">
-          <p class="eyebrow hero__eyebrow">$ whoami</p>
+          <button class="eyebrow eyebrow--link" type="button" data-cmd="whoami" aria-label="Run 'whoami' in the interactive terminal" title="Run in terminal">$ whoami</button>
           <h1 class="hero__name">Kaushal Kalas</h1>
           <p class="hero__role" id="hero-role"></p>
           <p class="hero__tagline" id="hero-tagline"></p>
           <div class="hero__ctas">
             <a class="btn btn--primary" href="#projects">View projects <span class="btn__arrow" aria-hidden="true">→</span></a>
-            <a class="btn btn--secondary" id="hero-resume" href="#">Download resume</a>
+            <a class="btn btn--secondary" id="hero-resume" href="./assets/resume/Kaushal_Kalas_Resume.pdf" download="Kaushal_Kalas_Resume.pdf">Download resume</a>
           </div>
         </div>
         <figure class="hero__figure">
-          <img class="hero__avatar" id="hero-avatar" src="./assets/profile-avatar.svg" alt="Stylized monogram avatar of Kaushal Kalas" width="420" height="420" />
+          <img class="hero__avatar" id="hero-avatar" src="./assets/profile-avatar-animated.svg" alt="Animated avatar of Kaushal Kalas" width="320" height="320" />
         </figure>
       </div>
     </section>
@@ -87,7 +95,7 @@
           <span class="terminal__dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <span class="terminal__title">kaushal@debian:~ — bash</span>
           <span class="terminal__actions">
-            <button class="terminal__chat-close" id="terminal-chat-close" type="button">exit</button>
+            <span class="terminal__hint" aria-hidden="true">press / to focus</span>
             <button class="terminal__copy" id="terminal-copy" type="button">copy</button>
           </span>
         </div>
@@ -100,7 +108,6 @@
               <input class="terminal__input" id="terminal-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command input" placeholder="type 'help'" />
             </div>
           </div>
-          <div class="terminal__chat" id="terminal-chat" aria-hidden="true"></div>
         </div>
       </div>
     </section>
@@ -108,7 +115,7 @@
     <!-- About -->
     <section class="section" id="about">
       <div class="container">
-        <p class="eyebrow">$ about</p>
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="about" aria-label="Run 'about' in the interactive terminal" title="Run in terminal">$ about</button>
         <h2 class="section__title">About</h2>
         <div class="about__grid">
           <div class="about__body" id="about-body"></div>
@@ -125,7 +132,7 @@
     <!-- Skills -->
     <section class="section" id="skills">
       <div class="container">
-        <p class="eyebrow">$ skills</p>
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="skills" aria-label="Run 'skills' in the interactive terminal" title="Run in terminal">$ skills</button>
         <h2 class="section__title">Skills</h2>
         <div class="skills__list" id="skills-list"></div>
       </div>
@@ -134,39 +141,44 @@
     <!-- Projects -->
     <section class="section" id="projects">
       <div class="container">
-        <p class="eyebrow">$ projects</p>
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="projects" aria-label="Run 'projects' in the interactive terminal" title="Run in terminal">$ projects</button>
         <h2 class="section__title">Projects</h2>
         <div id="featured-projects"></div>
         <div class="projects__grid" id="projects-grid"></div>
       </div>
     </section>
 
-    <!-- Experience / Education / Achievements -->
-    <section class="section" id="experience">
+    <!-- Education -->
+    <section class="section" id="education">
       <div class="container">
-        <p class="eyebrow">$ experience</p>
-        <h2 class="section__title">Experience</h2>
-        <div class="strip">
-          <div class="strip__col">
-            <h3 class="strip__head">Experience</h3>
-            <div id="experience-list"></div>
-          </div>
-          <div class="strip__col">
-            <h3 class="strip__head">Education</h3>
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="education" aria-label="Run 'education' in the interactive terminal" title="Run in terminal">$ education</button>
+        <h2 class="section__title">Education</h2>
+        <div class="education__grid">
+          <div class="education__col">
+            <h3 class="education__head">Degrees</h3>
             <div id="education-list"></div>
           </div>
-          <div class="strip__col">
-            <h3 class="strip__head">Achievements</h3>
-            <div id="achievements-list"></div>
+          <div class="education__col">
+            <h3 class="education__head">Professional Training</h3>
+            <div id="training-list"></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Extracurricular Activities -->
+    <section class="section" id="extracurricular">
+      <div class="container">
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="extracurricular" aria-label="Run 'extracurricular' in the interactive terminal" title="Run in terminal">$ extracurricular</button>
+        <h2 class="section__title">Extracurricular Activities</h2>
+        <div id="extracurricular-list"></div>
       </div>
     </section>
 
     <!-- Gallery -->
     <section class="section" id="gallery">
       <div class="container">
-        <p class="eyebrow">$ gallery</p>
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="gallery" aria-label="Run 'gallery' in the interactive terminal" title="Run in terminal">$ gallery</button>
         <h2 class="section__title">Gallery</h2>
         <p class="section__lede">The personal side — hackathons, campus, and everything between.</p>
         <div class="gallery" id="gallery-grid"></div>
@@ -176,7 +188,7 @@
     <!-- Contact -->
     <section class="section" id="contact">
       <div class="container">
-        <p class="eyebrow">$ contact</p>
+        <button class="eyebrow eyebrow--link" type="button" data-cmd="contact" aria-label="Run 'contact' in the interactive terminal" title="Run in terminal">$ contact</button>
         <h2 class="section__title">Contact</h2>
         <div class="contact__list" id="contact-list"></div>
       </div>
@@ -193,9 +205,23 @@
     </div>
   </footer>
 
+  <!-- Gallery lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+    <div class="lightbox__backdrop" data-lightbox-close></div>
+    <figure class="lightbox__figure">
+      <img class="lightbox__img" id="lightbox-img" src="" alt="" />
+      <figcaption class="lightbox__caption" id="lightbox-caption"></figcaption>
+      <div class="lightbox__controls">
+        <button class="lightbox__btn" id="lightbox-prev" type="button">← Prev</button>
+        <button class="lightbox__btn" id="lightbox-close" type="button">Close</button>
+        <button class="lightbox__btn" id="lightbox-next" type="button">Next →</button>
+      </div>
+    </figure>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="./js/main.js" defer></script>
-  <script src="./js/terminal.js" defer></script>
+  <script src="./js/main.js?v=9" defer></script>
+  <script src="./js/terminal.js?v=16" defer data-ai-proxy-url="https://tight-brook-7b74.kalaskaushal.workers.dev/"></script>
 </body>
 </html>

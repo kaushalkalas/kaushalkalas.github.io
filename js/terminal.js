@@ -7,42 +7,64 @@
   "use strict";
 
   /* ------------------------------------------------------------------
-     BOTPRESS INTEGRATION POINT
-     The AI assistant lives inside the terminal (PRD §22).
-     To enable `ask` and `ai`:
-       1. Create a bot at https://studio.botpress.cloud
-       2. Copy the "Webchat" embed config from your bot's "Webchat"
-          settings (clientId comes from the embed snippet).
-       3. Paste clientId below. Nothing else needs to change.
-     When unconfigured, `ask`/`ai` print a graceful message and the
-     rest of the terminal works normally.
+     AI ASSISTANT (Groq via Cloudflare Worker proxy)
+     The AI assistant answers directly in the terminal (PRD §22).
+     `ask <question>` sends the question to the AI backend together
+     with Kaushal's personal knowledge base (js/data/portfolio.json)
+     and prints the reply as a normal terminal line — no chat UI.
+     The Groq API key is kept OUT of the browser: it lives as a secret
+     on a Cloudflare Worker (see /worker) and is injected server-side.
+     To enable `ask`:
+       1. Deploy /worker/_worker.js to Cloudflare Workers (free tier),
+          set the `GROQ_API_KEY` secret and `ALLOWED_ORIGIN` variable.
+       2. Set AI_CONFIG.proxyUrl below, or set `data-ai-proxy-url` on the
+          terminal script tag, or define `window.AI_PROXY_URL` before loading.
+     When unconfigured, `ask` prints a graceful message and the rest
+     of the terminal works normally.
      ------------------------------------------------------------------ */
-  const BOTPRESS_CONFIG = {
-    clientId: "", // e.g. "c0ffee-..."; leave "" until you have a bot
-    hostUrl: "https://cdn.botpress.cloud",
-    botName: "Kaushal AI",
-    // Optional webchat overrides (v2.4 webchat options):
-    // stylesheet: "https://webchat-styler-css.botpress.app/prod/code.css",
-    // language: "en"
+  const AI_CONFIG = {
+    proxyUrl: (function () {
+      // Priority: script tag data attribute > window global > default
+      const script = document.currentScript;
+      if (script && script.dataset.aiProxyUrl) return script.dataset.aiProxyUrl;
+      if (typeof window.AI_PROXY_URL === "string" && window.AI_PROXY_URL) return window.AI_PROXY_URL;
+      return "";
+    })(),
+    endpoint: "https://api.groq.com/openai/v1/chat/completions",
+    model: "openai/gpt-oss-120b",
+    apiKey: "",
+    temperature: 0.3,
+    timeoutMs: 30000
   };
 
   const PROMPT = "kaushal@debian:~$";
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const AI_SYSTEM_PROMPT =
+    "You are the AI assistant inside Kaushal Kalas's portfolio terminal. " +
+    "You answer questions about Kaushal using ONLY the KNOWLEDGE BASE provided with this message. " +
+    "Rules: Never invent projects, qualifications, or achievements that are not in the knowledge base. " +
+    "Never reveal private information. If the answer is not in the knowledge base, reply exactly: " +
+    "\"I don't have reliable information about that in Kaushal's portfolio.\" " +
+    "Keep answers short and terminal-friendly: plain text, no markdown headings, " +
+    "no emoji, at most 6 lines for anything but 'ask' summaries. " +
+    "Write in a warm, precise, professional tone that matches Kaushal's portfolio.";
 
   const terminal = document.getElementById("terminal");
   const output = document.getElementById("terminal-output");
   const input = document.getElementById("terminal-input");
   const mirrorText = document.getElementById("terminal-mirror-text");
   const copyBtn = document.getElementById("terminal-copy");
-  const chatPanel = document.getElementById("terminal-chat");
-  const chatClose = document.querySelector(".terminal__chat-close");
 
   const history = [];
   let historyIndex = 0;
   let booting = true;
   let bootQueue = [];
 
-  const aiConfigured = Boolean(BOTPRESS_CONFIG.clientId);
+  const aiConfigured = Boolean(AI_CONFIG.proxyUrl || AI_CONFIG.apiKey);
+
+  let knowledgeBaseCache = null;
+  let askInProgress = false;
 
   function getData() {
     return window.__PORTFOLIO_DATA__ || null;
@@ -70,6 +92,14 @@
     lines.forEach(function (text) {
       addLine(esc(text));
     });
+  }
+
+  function printMultiline(text, dim) {
+    String(text)
+      .split(/\r?\n/)
+      .forEach(function (line) {
+        addLine(esc(line), dim);
+      });
   }
 
   function printEcho(cmd) {
@@ -106,11 +136,10 @@
         ["about", "show profile summary"],
         ["skills", "show technology stack"],
         ["projects", "list projects"],
-        ["experience", "show experience"],
-        ["education", "show education"],
-        ["achievements", "show achievements & certifications"],
+        ["education", "show education & training"],
+        ["extracurricular", "show extracurricular activities"],
         ["gallery", "list personal gallery"],
-        ["gallery <n>", "view gallery item <n>"],
+        ["gallery <n>", "render gallery item <n> as ANSI art"],
         ["resume", "open/download resume"],
         ["contact", "show contact links"],
         ["github", "open GitHub profile"],
@@ -118,7 +147,6 @@
         ["ls", "show portfolio resources"],
         ["history", "show command history"],
         ["ask <question>", "ask the AI assistant"],
-        ["ai", "enter AI chat mode"],
         ["clear", "clear the terminal"]
       ];
       const lines = ["Available commands:", ""];
@@ -171,25 +199,10 @@
       printLines(lines);
     },
 
-    experience: function () {
-      const d = getDataOrWarn();
-      if (!d) return;
-      const lines = sectionRule("Experience");
-      d.experience.forEach(function (e) {
-        lines.push(e.role + " — " + e.organization + " (" + e.timeline + ")");
-        e.responsibilities.forEach(function (r) {
-          lines.push("  - " + r);
-        });
-        lines.push("  Outcome: " + e.outcomes);
-        lines.push("");
-      });
-      printLines(lines);
-    },
-
     education: function () {
       const d = getDataOrWarn();
       if (!d) return;
-      const lines = sectionRule("Education");
+      const lines = sectionRule("Education & Professional Training");
       d.education.forEach(function (e) {
         lines.push(e.degree + " — " + e.institution + ", " + e.location);
         lines.push("  " + e.timeline + " · " + e.specialization);
@@ -197,14 +210,22 @@
           lines.push("  - " + h);
         });
       });
+      (d.training || []).forEach(function (t) {
+        lines.push("");
+        lines.push(t.title + " — " + t.organization + ", " + t.location);
+        lines.push("  " + t.timeline);
+        t.highlights.forEach(function (h) {
+          lines.push("  - " + h);
+        });
+      });
       printLines(lines);
     },
 
-    achievements: function () {
+    extracurricular: function () {
       const d = getDataOrWarn();
       if (!d) return;
-      const lines = sectionRule("Achievements & Certifications");
-      d.achievements.forEach(function (a) {
+      const lines = sectionRule("Extracurricular Activities");
+      d.extracurricular.forEach(function (a) {
         lines.push(a.title + " — " + a.issuer + " (" + a.date + ")");
         lines.push("  " + a.context);
       });
@@ -223,7 +244,7 @@
           lines.push("    " + g.caption);
           lines.push("");
         });
-        lines.push("Type 'gallery <number>' to view an image.");
+        lines.push("Type 'gallery <number>' to render it as ANSI art.");
         printLines(lines);
         return;
       }
@@ -238,31 +259,56 @@
       }
 
       addLine(item.title);
-      const img = document.createElement("img");
-      img.className = "terminal__img";
-      img.src = item.image;
-      img.alt = item.title + " — " + item.caption;
-      img.width = 640;
-      img.height = 480;
-      output.appendChild(img);
-      addLine("");
-      addLine(item.caption, true);
-      scrollToBottom();
+      const statusLine = addLine(
+        '<span class="terminal__line--dim">art: rendering ' + esc(item.image) + " …</span>"
+      );
+      const openLightbox = function () {
+        const api = window.__GALLERY_API__;
+        if (api && typeof api.open === "function") api.open(items.indexOf(item));
+      };
+      const showFallback = function () {
+        const img = document.createElement("img");
+        img.className = "terminal__img";
+        img.src = item.image;
+        img.alt = item.title + " — " + item.caption;
+        img.width = item.width || 640;
+        img.height = item.height || 480;
+        img.title = "Click to enlarge";
+        img.addEventListener("click", openLightbox);
+        statusLine.replaceChildren(img);
+        addLine("art: render failed — showing the photo instead (click to enlarge).", true);
+        scrollToBottom();
+      };
+      renderArt(item, artColumns(item))
+        .then(function (art) {
+          art.tabIndex = 0;
+          art.setAttribute("title", "Click to enlarge");
+          art.addEventListener("click", openLightbox);
+          art.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openLightbox();
+            }
+          });
+          statusLine.replaceChildren(art);
+          addLine("");
+          addLine(esc(item.caption), true);
+          scrollToBottom();
+        })
+        .catch(showFallback);
     },
 
     resume: function () {
       const d = getDataOrWarn();
       if (!d) return;
       const file = d.profile.resume.file;
-      printLines(["Opening " + d.profile.resume.label + "...", "✓ Resume opened successfully."]);
-      fetch(file, { method: "HEAD" })
-        .then(function (res) {
-          if (!res.ok) throw new Error("unavailable");
-          window.open(file, "_blank", "noopener");
-        })
-        .catch(function () {
-          printLines(["resume: file not found yet — check back soon.", "Hint: drop the PDF at assets/resume/Kaushal_Kalas_Resume.pdf"]);
-        });
+      if (this._resumeOpening) return;
+      this._resumeOpening = true;
+      printLines(["Opening " + d.profile.resume.label + "..."]);
+      window.open(file, "_blank", "noopener");
+      setTimeout(function () {
+        delete this._resumeOpening;
+      }.bind(this), 1000);
     },
 
     contact: function () {
@@ -290,12 +336,11 @@
         "  about/        profile summary",
         "  skills/       technology stack",
         "  projects/     featured + other projects",
-        "  experience/   internships & contributions",
-        "  education/    degree & coursework",
-        "  achievements/ awards & certifications",
+        "  education/    degrees & training",
+        "  extracurricular/  extracurricular activities",
         "  gallery/      personal photos",
         "  resume.pdf    " + (getData() ? getData().profile.resume.label : "resume file"),
-        "  ai/           portfolio assistant (ask <question>)"
+        "  ask <question>  portfolio assistant (answers in-terminal)"
       ]);
     },
 
@@ -321,22 +366,15 @@
       if (!aiConfigured) {
         printLines([
           "AI assistant is not configured yet.",
-          "Add your Botpress webchat config to BOTPRESS_CONFIG in js/terminal.js to enable 'ask' and 'ai'."
+          "Set AI_CONFIG.proxyUrl in js/terminal.js to enable 'ask'."
         ]);
+        return;
+      }
+      if (askInProgress) {
+        printLines(["ask: request already in progress, please wait..."]);
         return;
       }
       askAI(arg);
-    },
-
-    ai: function () {
-      if (!aiConfigured) {
-        printLines([
-          "AI assistant is not configured yet.",
-          "Add your Botpress webchat config to BOTPRESS_CONFIG in js/terminal.js to enable 'ask' and 'ai'."
-        ]);
-        return;
-      }
-      openChat();
     }
   };
 
@@ -429,107 +467,322 @@
     input.focus();
   });
 
+  /* ---------------- programmatic access (section eyebrows, "/" key) ---------------- */
+
+  function scrollToTerminal() {
+    terminal.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "center"
+    });
+  }
+
+  window.__TERMINAL_API__ = {
+    run: function (cmd) {
+      const clean = String(cmd || "").trim();
+      if (!clean) return;
+      if (booting) {
+        bootQueue.push(clean);
+      } else {
+        dispatch(clean);
+      }
+    },
+    focusTerminal: function () {
+      scrollToTerminal();
+      input.focus({ preventScroll: true });
+    }
+  };
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+    e.preventDefault();
+    scrollToTerminal();
+    input.focus({ preventScroll: true });
+  });
+
+  /* ---------------- ANSI art renderer (letter ramp) ---------------- */
+
+  let artMetricsCache = null;
+  // Measure the real monospace cell size once (this drives glyph aspect).
+  function artMetrics() {
+    if (artMetricsCache) return artMetricsCache;
+    const probe = document.createElement("span");
+    probe.className = "terminal__art";
+    probe.style.cssText += ";position:absolute;visibility:hidden;white-space:pre;";
+    probe.textContent = "abcdefghijklmnopqrstuvwxyz0123456789";
+    output.appendChild(probe); // inherit the terminal's exact font metrics
+    const rect = probe.getBoundingClientRect();
+    const charW = rect.width / 36 || 8;
+    const lineH = parseFloat(window.getComputedStyle(probe).lineHeight) || charW * 2;
+    probe.remove();
+    artMetricsCache = { charW: charW, lineH: lineH, fontRatio: charW / lineH };
+    return artMetricsCache;
+  }
+
+  function artColumns(item) {
+    const m = artMetrics();
+    const cs = window.getComputedStyle(output);
+    const avail = output.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    // 72 is the validated width band (probe12: finer grids fragment into noise)
+    let cols = Math.min(72, Math.max(28, Math.floor(avail / m.charW) - 2));
+    const ratio = (item.height || 1) / (item.width || 1);
+    // rows = cols * (h/w) * fontRatio (validated against probe output)
+    const rows = Math.round(cols * ratio * m.fontRatio);
+    if (rows > 42) cols = Math.max(28, Math.round(42 / (ratio * m.fontRatio)));
+    return cols;
+  }
+
+  function buildArtElement(matrix, title, caption) {
+    const art = document.createElement("span");
+    art.className = "terminal__art";
+    art.setAttribute("role", "img");
+    art.setAttribute("aria-label", title + " — " + caption);
+    matrix.forEach(function (line, i) {
+      let runCls = null;
+      let runText = "";
+      let runDirty = false;
+      const flushRun = function () {
+        if (!runDirty) return;
+        runDirty = false;
+        if (runCls) {
+          const s = document.createElement("span");
+          s.className = runCls;
+          s.textContent = runText;
+          art.appendChild(s);
+        } else {
+          art.appendChild(document.createTextNode(runText));
+        }
+      };
+      line.forEach(function (cell) {
+        const t = cell || { cls: null, ch: " " };
+        if (runDirty && t.cls === runCls) {
+          runText += t.ch;
+          return;
+        }
+        flushRun();
+        runCls = t.cls;
+        runText = t.ch;
+        runDirty = true;
+      });
+      flushRun();
+      if (i < matrix.length - 1) art.appendChild(document.createTextNode("\n"));
+    });
+    return art;
+  }
+
+  function decodeGalleryImage(item, cols) {
+    return new Promise(function (resolve, reject) {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = function () {
+        resolve(img);
+      };
+      img.onerror = function () {
+        reject(new Error("art: image failed to load"));
+      };
+      img.src = item.image;
+    }).then(function (img) {
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(2, cols * 8);
+      canvas.height = Math.max(2, Math.round((canvas.width * (item.height || 1)) / (item.width || 1)));
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      return ctx.getImageData(0, 0, canvas.width, canvas.height);
+    });
+  }
+
+  const ART_LETTER_RAMP = [" ", ".", ":", "i", "c", "o", "d", "p", "e", "0", "8", "M", "B", "Q"];
+
+  function renderArt(item, cols) {
+    return decodeGalleryImage(item, cols).then(function (imageData) {
+      const m = artMetrics();
+      const ratio = (item.height || 1) / (item.width || 1);
+      const rows = Math.round(cols * ratio * m.fontRatio);
+      const cellW = imageData.width / cols;
+      const cellH = imageData.height / rows;
+      const grid = [];
+      for (let r = 0; r < rows; r++) {
+        const row = [];
+        const y0 = Math.floor(r * cellH);
+        const y1 = Math.max(y0 + 1, Math.floor((r + 1) * cellH));
+        for (let c = 0; c < cols; c++) {
+          const x0 = Math.floor(c * cellW);
+          const x1 = Math.max(x0 + 1, Math.floor((c + 1) * cellW));
+          let sum = 0;
+          let n = 0;
+          for (let y = y0; y < y1; y++) {
+            for (let x = x0; x < x1; x++) {
+              const i = (y * imageData.width + x) * 4;
+              sum += 0.2126 * imageData.data[i] + 0.7152 * imageData.data[i + 1] + 0.0722 * imageData.data[i + 2];
+              n++;
+            }
+          }
+          row.push(sum / n / 255);
+        }
+        grid.push(row);
+      }
+      const flat = [];
+      grid.forEach(function (row) {
+        row.forEach(function (v) {
+          flat.push(v);
+        });
+      });
+      flat.sort(function (a, b) {
+        return a - b;
+      });
+      const at = function (p) {
+        return flat[Math.min(flat.length - 1, Math.floor(p * flat.length))];
+      };
+      const lo = at(0.05);
+      const hi = Math.max(at(0.95), lo + 1e-6);
+      const matrix = grid.map(function (row) {
+        return row.map(function (v) {
+          const t = (v - lo) / (hi - lo);
+          const ink = 1 - t;
+          const idx = Math.max(0, Math.min(ART_LETTER_RAMP.length - 1, Math.round(ink * (ART_LETTER_RAMP.length - 1))));
+          const ch = ART_LETTER_RAMP[idx];
+          let cls = null;
+          if (ch === " ") {
+            return { cls: null, ch: " " };
+          }
+          cls = ink >= 0.62 ? "t3" : ink >= 0.32 ? "t2" : "t1";
+          return { cls: cls, ch: ch };
+        });
+      });
+      return buildArtElement(matrix, item.title, item.caption);
+    });
+  }
+
   /* ---------------- boot sequence ---------------- */
 
-  const WELCOME =
-    "Welcome to Kaushal's portfolio. " +
-    "This is a simulated Debian terminal — type 'help' to see what I can show you.";
+  const WELCOME = "Welcome to Kaushal's portfolio.";
 
   function runBoot() {
     if (booting === false) return;
     booting = false;
 
-    if (reduceMotion) {
-      addLine(WELCOME, true);
-    } else {
-      const line = addLine("", true);
-      let i = 0;
-      const step = Math.max(8, Math.floor(WELCOME.length / 60));
-      const timer = setInterval(function () {
-        i = Math.min(WELCOME.length, i + step);
-        line.textContent = WELCOME.slice(0, i);
-        scrollToBottom();
-        if (i >= WELCOME.length) clearInterval(timer);
-      }, 24);
-    }
+    addLine(WELCOME, true);
+    addLine("Type 'help' to see available commands.", true);
 
     bootQueue.forEach(function (cmd) {
       dispatch(cmd);
     });
     bootQueue = [];
-    input.focus();
+    input.focus({ preventScroll: true });
   }
 
-  /* ---------------- Botpress integration ---------------- */
+  /* ---------------- AI assistant (Groq) ---------------- */
 
-  function loadBotpress() {
-    return new Promise(function (resolve) {
-      if (window.botpressWebChat) return resolve();
-      const s = document.createElement("script");
-      s.src = "https://cdn.botpress.cloud/webchat/v2.4/inject.js";
-      s.async = true;
-      s.onload = function () {
-        resolve();
-      };
-      s.onerror = function () {
-        resolve();
-      };
-      document.body.appendChild(s);
-    });
+  function buildKnowledgeBase() {
+    if (knowledgeBaseCache) return knowledgeBaseCache;
+    const d = getData();
+    if (!d) return "";
+    knowledgeBaseCache = JSON.stringify(d);
+    return knowledgeBaseCache;
   }
 
-  function initBotpress() {
-    if (!aiConfigured || !window.botpressWebChat) return;
-    const options = {
-      clientId: BOTPRESS_CONFIG.clientId,
-      hostUrl: BOTPRESS_CONFIG.hostUrl,
-      botName: BOTPRESS_CONFIG.botName,
-      containerSelector: "#terminal-chat",
-      hideWidget: true,
-      disableAnimations: reduceMotion
-    };
-    if (BOTPRESS_CONFIG.stylesheet) options.stylesheet = BOTPRESS_CONFIG.stylesheet;
-    if (BOTPRESS_CONFIG.language) options.language = BOTPRESS_CONFIG.language;
+  function buildMessages(question) {
+    return [
+      { role: "system", content: AI_SYSTEM_PROMPT + "\n\nKNOWLEDGE BASE:\n" + buildKnowledgeBase() },
+      { role: "user", content: question }
+    ];
+  }
 
-    window.botpressWebChat.init(options);
+  function handleAIResponse(r) {
+    if (!r.ok) {
+      let hint = "the AI request failed (" + r.status + ").";
+      if (r.status === 401) hint = "the API key was rejected (401). Check the worker secret.";
+      else if (r.status === 403) hint = "access denied (403). Check the worker ALLOWED_ORIGIN variable.";
+      else if (r.status === 429) hint = "rate limit reached (429). Try again in a moment.";
+      printLines(["ask: " + hint]);
+      return null;
+    }
+    const content =
+      r.body && r.body.choices && r.body.choices[0] && r.body.choices[0].message && r.body.choices[0].message.content;
+    if (!content) {
+      printLines(["ask: the AI returned an empty response. Try again."]);
+      return null;
+    }
+    return content;
+  }
 
-    /* echo bot replies into the terminal output */
-    window.botpressWebChat.onEvent(function (event) {
-      if (event.type !== "MESSAGE") return;
-      const from = event.payload.from;
-      const text = event.payload.text;
-      if (!text) return;
-      if (from === "bot") {
-        addLine(text.split("\n").join("<br/>"));
-      }
-    });
+  function renderAIResponse(content) {
+    const lines = String(content).split(/\r?\n/);
+    const aiLine = document.createElement("div");
+    aiLine.className = "terminal__line";
+    const aiPrefix = document.createElement("span");
+    aiPrefix.className = "t-ai";
+    aiPrefix.textContent = "AI:";
+    aiLine.appendChild(aiPrefix);
+    aiLine.appendChild(document.createTextNode(" " + esc(lines[0])));
+    output.appendChild(aiLine);
+    scrollToBottom();
+    if (lines.length > 1) printMultiline(lines.slice(1).join("\n"), true);
+    addLine("", true);
+  }
+
+  function handleAIError(err) {
+    if (err && err.name === "AbortError") {
+      printLines(["ask: the AI took too long to respond. Try again in a moment."]);
+    } else {
+      printLines(["ask: could not reach the AI (" + (err && err.message ? err.message : "network error") + ")."]);
+    }
   }
 
   function askAI(question) {
-    if (!window.botpressWebChat) {
-      printLines(["ask: the AI chat failed to load. Try again in a moment."]);
+    addLine("> " + esc(question), true);
+    if (!aiConfigured) {
+      printLines([
+        "ask: the AI assistant is not configured yet.",
+        "Set AI_CONFIG.proxyUrl in js/terminal.js (see the comment above)."
+      ]);
       return;
     }
-    addLine('<span class="t-prefix">' + esc(PROMPT) + "</span> <span class=\"t-cmd\">ask " + esc(question) + "</span>");
-    addLine("> " + esc(question), true);
-    window.botpressWebChat.sendEvent({ type: "message", payload: { text: question } });
-  }
+    const d = getData();
+    if (!d) {
+      printLines(["ask: portfolio data is not available right now. Try again in a moment."]);
+      return;
+    }
 
-  function openChat() {
-    chatPanel.classList.add("is-open");
-    chatPanel.setAttribute("aria-hidden", "false");
-    terminal.classList.add("is-chat");
-    loadBotpress().then(initBotpress);
-  }
+    printLines(["ask: consulting the knowledge base…"]);
 
-  function closeChat() {
-    chatPanel.classList.remove("is-open");
-    chatPanel.setAttribute("aria-hidden", "true");
-    terminal.classList.remove("is-chat");
-    input.focus();
-  }
+    const controller = new AbortController();
+    const timer = setTimeout(function () {
+      controller.abort();
+    }, AI_CONFIG.timeoutMs);
 
-  chatClose.addEventListener("click", closeChat);
+    const url = AI_CONFIG.proxyUrl || AI_CONFIG.endpoint;
+    const headers = { "Content-Type": "application/json" };
+    if (!AI_CONFIG.proxyUrl) headers.Authorization = "Bearer " + AI_CONFIG.apiKey;
+
+    fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        model: AI_CONFIG.model,
+        temperature: AI_CONFIG.temperature,
+        messages: buildMessages(question)
+      }),
+      signal: controller.signal
+    })
+      .then(function (res) {
+        return res.json().then(function (body) {
+          return { ok: res.ok, status: res.status, body: body };
+        });
+      })
+      .then(function (r) {
+        const content = handleAIResponse(r);
+        if (content) renderAIResponse(content);
+      })
+      .catch(handleAIError)
+      .finally(function () {
+        clearTimeout(timer);
+        askInProgress = false;
+      });
+  }
 
   /* ---------------- boot wiring ---------------- */
 

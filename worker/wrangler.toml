@@ -1,0 +1,6 @@
+name = "portfolio-ai-proxy"
+main = "_worker.js"
+compatibility_date = "2026-08-18"
+
+[vars]
+ALLOWED_ORIGIN = "https://kaushalkalas.github.io,http://localhost:8955"

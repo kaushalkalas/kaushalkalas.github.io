@@ -18,12 +18,19 @@
   /* ---------------- data load ---------------- */
 
   function loadData() {
-    return fetch(DATA_URL)
+    const controller = new AbortController();
+    const timeout = setTimeout(function () {
+      controller.abort();
+    }, 5000);
+
+    return fetch(DATA_URL, { signal: controller.signal })
       .then(function (res) {
+        clearTimeout(timeout);
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
       .catch(function (err) {
+        clearTimeout(timeout);
         console.error("Failed to load portfolio data:", err);
         throw err;
       });
@@ -78,7 +85,7 @@
       (featured ? '<span class="card__featured-tag">featured</span>' : "") +
       meta +
       "</div>" +
-      '<h3 class="card__title">' + project.name + '<span class="card__arrow" aria-hidden="true">→</span></h3>' +
+      '<h3 class="card__title">' + project.name + "</h3>" +
       '<p class="card__desc">' + project.description + "</p>" +
       '<div class="tags">' + tags(project.stack) + "</div>" +
       '<div class="card__links">' + links + "</div>" +
@@ -101,22 +108,6 @@
     }).join("");
   }
 
-  function renderExperience() {
-    $("#experience-list").innerHTML = data.experience.map(function (e) {
-      return (
-        '<div class="entry">' +
-        '<p class="entry__title">' + e.role + "</p>" +
-        '<p class="entry__org">' + e.organization + "</p>" +
-        '<p class="entry__meta">' + e.timeline + "</p>" +
-        '<ul class="entry__list">' + e.responsibilities.map(function (r) {
-          return "<li>" + r + "</li>";
-        }).join("") + "</ul>" +
-        '<p class="entry__outcome"><strong>Outcome:</strong> ' + e.outcomes + "</p>" +
-        "</div>"
-      );
-    }).join("");
-  }
-
   function renderEducation() {
     $("#education-list").innerHTML = data.education.map(function (e) {
       return (
@@ -133,8 +124,23 @@
     }).join("");
   }
 
-  function renderAchievements() {
-    $("#achievements-list").innerHTML = data.achievements.map(function (a) {
+  function renderTraining() {
+    $("#training-list").innerHTML = data.training.map(function (t) {
+      return (
+        '<div class="entry">' +
+        '<p class="entry__title">' + t.title + "</p>" +
+        '<p class="entry__org">' + t.organization + " · " + t.location + "</p>" +
+        '<p class="entry__meta">' + t.timeline + "</p>" +
+        '<ul class="entry__list">' + t.highlights.map(function (h) {
+          return "<li>" + h + "</li>";
+        }).join("") + "</ul>" +
+        "</div>"
+      );
+    }).join("");
+  }
+
+  function renderExtracurricular() {
+    $("#extracurricular-list").innerHTML = data.extracurricular.map(function (a) {
       const link = a.link
         ? '<div class="card__links"><a class="card__link" href="' + a.link + '" target="_blank" rel="noopener">Credential →</a></div>'
         : "";
@@ -150,10 +156,14 @@
   }
 
   function renderGallery() {
-    $("#gallery-grid").innerHTML = data.gallery.map(function (g) {
+    $("#gallery-grid").innerHTML = data.gallery.map(function (g, i) {
+      const w = g.width || 640;
+      const h = g.height || 480;
       return (
         '<figure class="gallery-item">' +
-        '<img src="' + g.image + '" alt="' + g.title + " — " + g.caption + '" loading="lazy" width="640" height="480" />' +
+        '<button class="gallery-item__open" type="button" data-index="' + i + '" aria-label="Open image: ' + g.title + '">' +
+        '<img src="' + g.image + '" alt="' + g.title + " — " + g.caption + '" loading="lazy" width="' + w + '" height="' + h + '" />' +
+        "</button>" +
         '<figcaption class="gallery-item__caption">' +
         '<p class="gallery-item__title">' + g.title + "</p>" +
         '<p class="gallery-item__text">' + g.caption + "</p>" +
@@ -161,6 +171,68 @@
         "</figure>"
       );
     }).join("");
+  }
+
+  /* ---------------- gallery lightbox ---------------- */
+
+  function initLightbox() {
+    const lightbox = $("#lightbox");
+    const img = $("#lightbox-img");
+    const caption = $("#lightbox-caption");
+    if (!lightbox || !img || !caption || !data) return;
+
+    const prevBtn = $("#lightbox-prev");
+    const nextBtn = $("#lightbox-next");
+    const closeBtn = $("#lightbox-close");
+    let current = 0;
+    let lastFocused = null;
+
+    function show(index) {
+      const items = data.gallery;
+      current = (index + items.length) % items.length;
+      const g = items[current];
+      img.src = g.image;
+      img.alt = g.title + " — " + g.caption;
+      caption.textContent = g.title + " — " + g.caption;
+    }
+
+    function open(index, trigger) {
+      lastFocused = trigger || document.activeElement;
+      show(index);
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+      if (closeBtn) closeBtn.focus();
+    }
+
+    // Terminal `gallery <n>` ANSI art opens the lightbox through this hook.
+    window.__GALLERY_API__ = { open: open };
+
+    function close() {
+      lightbox.hidden = true;
+      document.body.style.overflow = "";
+      img.removeAttribute("src");
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    document.addEventListener("click", function (e) {
+      const opener = e.target.closest(".gallery-item__open");
+      if (opener) {
+        open(parseInt(opener.getAttribute("data-index"), 10) || 0, opener);
+        return;
+      }
+      if (e.target.closest("[data-lightbox-close]")) close();
+    });
+
+    if (prevBtn) prevBtn.addEventListener("click", function () { show(current - 1); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { show(current + 1); });
+    if (closeBtn) closeBtn.addEventListener("click", close);
+
+    document.addEventListener("keydown", function (e) {
+      if (lightbox.hidden) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowLeft") show(current - 1);
+      else if (e.key === "ArrowRight") show(current + 1);
+    });
   }
 
   function renderContact() {
@@ -175,10 +247,38 @@
       );
     }).join("");
 
-    $("#footer-links").innerHTML = ["github", "linkedin", "email"].map(function (key) {
+    $("#footer-links").innerHTML = ["github", "linkedin", "x", "email"].map(function (key) {
       const c = data.contact[key];
       return '<a href="' + c.href + '"' + (key === "email" ? "" : ' target="_blank" rel="noopener"') + ">" + key + "</a>";
     }).join("");
+  }
+
+  /* ---------------- eyebrow -> terminal command links ---------------- */
+
+  function initEyebrowCommands() {
+    const api = window.__TERMINAL_API__;
+    let lastCmd = "";
+    let lastTime = 0;
+
+    $$("button.eyebrow[data-cmd]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const cmd = btn.getAttribute("data-cmd");
+        if (!api) {
+          const t = document.getElementById("terminal");
+          if (t) t.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+          return;
+        }
+        api.focusTerminal();
+        const now = Date.now();
+        if (cmd !== lastCmd || now - lastTime > 600) {
+          lastCmd = cmd;
+          lastTime = now;
+          window.setTimeout(function () {
+            api.run(cmd);
+          }, reduceMotion ? 60 : 380);
+        }
+      });
+    });
   }
 
   /* ---------------- resume availability ---------------- */
@@ -199,7 +299,7 @@
   /* ---------------- nav ---------------- */
 
   function initNav() {
-    const sections = ["about", "skills", "projects", "gallery", "contact"];
+    const sections = ["about", "skills", "projects", "education", "extracurricular", "gallery", "contact"];
     const links = $$(".nav__link");
     let ticking = false;
 
@@ -287,9 +387,8 @@
     function apply(theme) {
       root.setAttribute("data-theme", theme);
       const isLight = theme === "light";
-      btn.textContent = isLight ? "dark" : "light";
       btn.setAttribute("aria-pressed", String(isLight));
-      btn.setAttribute("aria-label", "Switch to " + (isLight ? "dark" : "light") + " theme");
+      btn.setAttribute("aria-label", isLight ? "Switch to dark theme" : "Switch to light theme");
     }
 
     function current() {
@@ -319,44 +418,41 @@
 
   /* ---------------- GSAP motion ---------------- */
 
-  function initMotion() {
-    if (typeof gsap === "undefined") return;
+  function getRevealTargets(section) {
+    return gsap.utils
+      .toArray(
+        ".eyebrow, .section__title, .section__lede, .featured, .project-card, .skill-cat, .entry, .gallery-item, .contact-row, .about__body > p, .about__side > *",
+        section
+      )
+      .filter(Boolean);
+  }
 
-    if (reduceMotion) {
-      return;
-    }
+  function initSectionReveals() {
+    if (reduceMotion) return;
+    if (typeof gsap === "undefined" || !gsap.ScrollTrigger) return;
 
-    /* hero entrance: name → role → tagline → CTAs, rise 24px */
-    const heroTl = gsap.timeline({ defaults: { duration: 0.6, ease: EASE } });
-    heroTl
-      .fromTo(".hero__eyebrow", { y: 24, opacity: 0 }, { y: 0, opacity: 1 }, 0)
-      .fromTo(".hero__name", { y: 24, opacity: 0 }, { y: 0, opacity: 1 }, 0.08)
-      .fromTo(".hero__role", { y: 24, opacity: 0 }, { y: 0, opacity: 1 }, 0.16)
-      .fromTo(".hero__tagline", { y: 24, opacity: 0 }, { y: 0, opacity: 1 }, 0.24)
-      .fromTo(".hero__ctas", { y: 24, opacity: 0 }, { y: 0, opacity: 1 }, 0.32)
-      .fromTo(".hero__figure", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.2);
-
-    /* section reveals */
     const revealDefaults = { y: 24, opacity: 0, duration: 0.4, ease: EASE };
 
     $$(".section").forEach(function (section) {
-      const targets = gsap.utils
-        .toArray(
-          ".eyebrow, .section__title, .section__lede, .featured, .project-card, .skill-cat, .entry, .gallery-item, .contact-row, .strip__col, .about__body > p, .about__side > *",
-          section
-        )
-        .filter(Boolean);
+      const targets = getRevealTargets(section);
       if (!targets.length) return;
       gsap.from(targets, {
         ...revealDefaults,
         stagger: 0.04,
         scrollTrigger: {
           trigger: section,
-          start: "top 85%",
+          start: "top 90%",
           once: true
         }
       });
     });
+  }
+
+  function initMotion() {
+    if (typeof gsap === "undefined") return;
+    if (reduceMotion) return;
+
+    initSectionReveals();
   }
 
   /* ---------------- boot ---------------- */
@@ -370,11 +466,12 @@
         renderAbout();
         renderSkills();
         renderProjects();
-        renderExperience();
         renderEducation();
-        renderAchievements();
+        renderTraining();
+        renderExtracurricular();
         renderGallery();
         renderContact();
+        initLightbox();
         checkResume();
         window.dispatchEvent(new CustomEvent("portfolio:data"));
         initMotion();
@@ -384,5 +481,6 @@
       });
     initNav();
     initTheme();
+    initEyebrowCommands();
   });
 })();

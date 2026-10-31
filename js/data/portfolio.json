@@ -2,17 +2,17 @@
   "profile": {
     "name": "Kaushal Kalas",
     "title": "AI/ML Developer",
-    "tagline": "I build machine-learning systems that solve real problems, and I like understanding how they work under the hood.",
+    "tagline": "What fascinates me about computers is how they operate at a fundamental level using bits and binary. This fascination is what drew me to computer engineering.",
     "about": [
-      "I am an AI/ML-focused developer currently pursuing my engineering degree, where I spend most of my time turning ideas into working models — from natural-language systems to computer-vision experiments.",
-      "I care about the full lifecycle of a project: framing the problem, cleaning the data, training the model, and shipping something people can actually use.",
-      "Right now I am learning deep learning at scale and exploring how LLMs can be grounded in real, verifiable data. Long term, I want to build intelligent systems that are useful, honest, and well-engineered.",
-      "I enjoy hackathons, open-source collaboration, and the messy middle of any technical problem — the part where it stops being a tutorial and starts being real."
+      "Curiosity has always been the foundation of my learning journey, inspiring me to explore software development and artificial intelligence.",
+      "I aim to apply my technical skills and problem-solving abilities to build solutions while continuously growing as an engineer.",
+      "Currently focused on DevOps and Data Engineering. Learning how to take AI/ML systems from trained experiments into deployed, monitored products."
     ],
-    "learning": "Deep learning at scale, LLM grounding and retrieval, and production ML tooling.",
-    "interests": ["AI/ML research", "System design", "Hackathons", "Open source", "Reading", "Football"],
-    "avatar": "./assets/profile-avatar.svg",
+    "learning": "DevOps and Data Engineering",
+    "interests": ["Computer vision", "Cybersecurity", "DevOps", "Data Engineering", "Hackathons", "Open source"],
+    "avatar": "./assets/profile-avatar-animated.svg",
     "location": "India",
+    
     "resume": {
       "file": "./assets/resume/Kaushal_Kalas_Resume.pdf",
       "label": "Kaushal_Kalas_Resume.pdf",
@@ -20,105 +20,100 @@
     }
   },
   "skills": {
-    "Languages": ["Python", "C++", "JavaScript", "SQL", "Java"],
-    "Web Development": ["HTML", "CSS", "JavaScript", "React", "Node.js", "REST APIs"],
-    "AI / Machine Learning": ["PyTorch", "TensorFlow", "scikit-learn", "NumPy", "Pandas", "Hugging Face", "LangChain", "OpenCV"],
-    "Databases": ["MySQL", "PostgreSQL", "MongoDB"],
-    "Tools & Platforms": ["Git", "GitHub", "Linux", "Docker", "VS Code", "Figma"],
-    "Other": ["Prompt engineering", "Data visualization", "Technical writing"]
+    "Programming": ["Java", "Python", "SQL", "JavaScript", "Node.js", "HTML/CSS"],
+    "Frameworks": ["Express.js", "Angular 19", "Android SDK", "PyTorch", "RF-DETR", "Supervision"],
+    "Tools": ["Git", "GitHub", "Postman", "Android Studio", "Figma", "Antigravity", "OpenCode", "Open Design", "Roboflow", "Docker"],
+    "Operating Systems": ["Linux (Debian)"]
   },
   "projects": [
     {
-      "name": "DocSage — RAG-powered document assistant",
-      "featured": true,
-      "description": "A retrieval-augmented question-answering system that answers questions strictly from a user's own documents, with citations and no hallucinated answers.",
-      "problem": "Generic chatbots invent answers when asked about private or niche documents; teams needed a system that could only answer from their own material.",
-      "features": ["Embedding-based retrieval", "Chunked vector search", "Citation-grounded responses", "Source highlighting"],
-      "stack": ["Python", "LangChain", "FAISS", "Hugging Face", "Streamlit"],
-      "github": "https://github.com/kaushalkalas/docsage",
+      "name": "PotSpot — Real-time pothole detection & segmentation",
+      "featured": false,
+      "description": "Fine-tuned a transformer-based RF-DETR SegNano model for real-time pothole detection and instance segmentation across 3 road-anomaly classes (Potholes, Manholes, Unmarked Bumps). Sourced and preprocessed a 1,553-image COCO segmentation dataset via Roboflow API. Model achieves 76% recall on multi-pothole incidents.",
+      "problem": "Road infrastructure monitoring lacks automated, reliable detection of diverse anomaly types in real-world conditions.",
+      "features": ["RF-DETR SegNano fine-tuning", "1,553-image COCO dataset via Roboflow", "3-class instance segmentation", "76% recall on multi-anomaly detection", "Real-time inference pipeline"],
+      "stack": ["Python", "PyTorch", "RF-DETR", "Supervision", "Roboflow"],
+      "github": "https://github.com/kaushalkalas/potspot",
       "live": "",
-      "year": 2025
+      "year": 2026
     },
     {
-      "name": "CampusPlanner — smart timetable scheduler",
+      "name": "Security Guardian — AI security scanner for GitHub PRs",
       "featured": false,
-      "description": "A constraint-based scheduler that generates conflict-free college timetables, saving departments hours of manual arrangement each semester.",
-      "problem": "Department staff spent days hand-fitting rooms, faculty, and batches into a timetable; small changes cascaded into large conflicts.",
-      "features": ["Constraint propagation", "Room/faculty conflict detection", "CSV import and export", "Manual override support"],
-      "stack": ["Python", "Pandas", "Constraint-solving", "Flask"],
-      "github": "https://github.com/kaushalkalas/campusplanner",
+      "description": "Built an AI security scanner agent that automatically scans GitHub pull requests for hardcoded secrets, OWASP Top 10 vulnerabilities, and unsafe code patterns. Implemented severity-based PR blocking (Critical/High findings) with actionable remediation guidance.",
+      "problem": "Security vulnerabilities and secrets often merge into codebases undetected; developers need automated, contextual feedback at PR time.",
+      "features": ["Secret detection", "OWASP Top 10 scanning", "Severity-based PR blocking", "Remediation guidance", "GitHub Actions integration"],
+      "stack": ["Python", "LLM", "gitagent", "GitHub Actions"],
+      "github": "https://github.com/kaushalkalas/security-guardian",
       "live": "",
-      "year": 2025
+      "year": 2026
     },
     {
-      "name": "SignNet — sign language recognition",
+      "name": "FitBuddy — Android fitness tracking app",
       "featured": false,
-      "description": "A computer-vision model that recognizes common ISL hand gestures in real time, built as a hackathon prototype and improved over two months.",
-      "problem": "Hearing people rarely know sign language; a lightweight real-time recognizer could bridge everyday communication.",
-      "features": ["Real-time hand landmark tracking", "Gesture classification", "Live webcam inference", "Custom dataset pipeline"],
-      "stack": ["Python", "OpenCV", "MediaPipe", "TensorFlow"],
-      "github": "https://github.com/kaushalkalas/signnet",
+      "description": "Developed an Android fitness tracking application that monitors step count, distance traveled, and calories burned with real-time sensor integration and secure user authentication.",
+      "problem": "Need for a lightweight, privacy-respecting fitness tracker with accurate sensor integration and seamless auth.",
+      "features": ["Real-time step counter & accelerometer integration", "Distance & calorie estimation", "Email authentication with verification", "Runtime permission handling", "Firebase backend"],
+      "stack": ["Java", "XML", "Firebase", "Android SDK"],
+      "github": "https://github.com/kaushalkalas/fitbuddy",
       "live": "",
       "year": 2024
-    },
-    {
-      "name": "PriceScope — ML price forecaster",
-      "featured": false,
-      "description": "A time-series experiment forecasting product prices using gradient-boosted trees, with honest error reporting and feature analysis.",
-      "problem": "Small sellers price by guesswork; even a modestly accurate forecast with uncertainty bands is more useful than intuition.",
-      "features": ["Time-series feature engineering", "XGBoost forecasting", "Uncertainty band reporting", "Model comparison notebook"],
-      "stack": ["Python", "XGBoost", "scikit-learn", "Pandas", "Jupyter"],
-      "github": "https://github.com/kaushalkalas/pricescope",
-      "live": "",
-      "year": 2024
-    }
-  ],
-  "experience": [
-    {
-      "role": "Machine Learning Intern",
-      "organization": "AI Research Lab",
-      "timeline": "Summer 2025",
-      "responsibilities": ["Built data pipelines for a text-classification research project", "Ran and compared baseline models against SOTA approaches", "Documented experiments for the team's reproducibility report"],
-      "outcomes": "Cut experiment turnaround by ~30% with a reusable evaluation harness."
-    },
-    {
-      "role": "Open Source Contributor",
-      "organization": "Various projects",
-      "timeline": "2024 – present",
-      "responsibilities": ["Contributed bug fixes and documentation to ML libraries", "Reviewed community PRs and triaged issues"],
-      "outcomes": "Merged contributions across multiple repositories; maintainer of two small experiment repos."
     }
   ],
   "education": [
     {
-      "degree": "B.Tech in Computer Science",
-      "institution": "Government College of Engineering",
-      "location": "Maharashtra, India",
-      "timeline": "2022 – 2026",
-      "specialization": "Specialization in AI/ML electives",
-      "highlights": ["GPA: 8.9/10", "Coursework: ML, Deep Learning, DBMS, OS, Data Structures, Statistics"]
+      "degree": "B.Tech in Computer Science & Engineering (AI & ML)",
+      "institution": "D.K.T.E. Society's Textile & Engineering Institute",
+      "location": "Ichalkaranji, Maharashtra, India",
+      "timeline": "Sep 2024 – Present",
+      "specialization": "AI & ML specialization",
+      "highlights": ["CGPA: 7.82", "Coursework: ML, Deep Learning, DBMS, OS, Data Structures, Statistics"]
+    },
+    {
+      "degree": "Diploma in Computer Engineering",
+      "institution": "Government Polytechnic",
+      "location": "Miraj, Maharashtra, India",
+      "timeline": "Jun 2021 – May 2024",
+      "specialization": "Computer Engineering",
+      "highlights": ["Percentage: 87.94%", "Coursework: Programming, Data Structures, DBMS, Computer Networks, Software Engineering"]
     }
   ],
-  "achievements": [
+  "training": [
     {
-      "title": "1st Runner-up — National AI Hackathon",
-      "issuer": "TechFest 2025",
-      "date": "Jan 2025",
-      "context": "Built a document Q&A prototype over a weekend with a two-person team.",
+      "title": "Cybersecurity",
+      "organization": "SunBeam Infotech Pvt. Ltd.",
+      "location": "Pune, MH",
+      "timeline": "Dec 2025 – Jan 2026",
+      "highlights": [
+        "Built and deployed Snort (IDS) for intrusion detection",
+        "Configured Nagios Core for real-time host and service monitoring",
+        "Set up pfSense firewall with DHCP, DNS, and port-forwarding rules",
+        "Performed vulnerability assessments including SQL Injection testing",
+        "Enforced Fail2ban to prevent brute-force attacks",
+        "Analyzed Apache2 logs for incident response"
+      ]
+    }
+  ],
+  "extracurricular": [
+    {
+      "title": "Participant — MumbaiHacks 2025 (Largest Agentic AI Hackathon)",
+      "issuer": "MumbaiHacks",
+      "date": "2025",
+      "context": "Participated as a team member in the largest Agentic AI hackathon.",
       "link": ""
     },
     {
-      "title": "Google Cloud Certified — Associate Cloud Engineer",
-      "issuer": "Google",
-      "date": "2024",
-      "context": "Validated practical cloud fundamentals for ML workloads.",
+      "title": "2nd Runner-Up — TECH-YODDHA 2025",
+      "issuer": "DKTE",
+      "date": "Aug 2025",
+      "context": "Secured 2nd runner-up position in the TECH-YODDHA 2025 competition at DKTE.",
       "link": ""
     },
     {
-      "title": "Top 10 — Campus ML Challenge",
-      "issuer": "University-level competition",
-      "date": "2024",
-      "context": "Ranked among the top 10 of 120+ teams in a predictive-modeling challenge.",
+      "title": "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
+      "issuer": "Oracle",
+      "date": "Nov 2025",
+      "context": "Validated foundational knowledge of AI services on Oracle Cloud Infrastructure.",
       "link": ""
     }
   ],
@@ -127,43 +122,56 @@
       "id": 1,
       "title": "Mumbai Hacks 2025",
       "caption": "A memorable weekend building and collaborating with the team.",
-      "image": "./assets/gallery/mumbai-hacks.svg"
+      "image": "./assets/gallery/mumbai-hacks.jpeg",
+      "width": 1195,
+      "height": 1159
     },
     {
       "id": 2,
-      "title": "College Tech Fest",
-      "caption": "Running the AI booth and demoing SignNet to visitors.",
-      "image": "./assets/gallery/techfest.svg"
+      "title": "Running",
+      "caption": "Out on a run.",
+      "image": "./assets/gallery/running.jpeg",
+      "width": 899,
+      "height": 1599
     },
     {
       "id": 3,
-      "title": "Late-night training run",
-      "caption": "The classic: watching a training curve and waiting.",
-      "image": "./assets/gallery/training-run.svg"
+      "title": "2nd Runner-Up — TECH-YODDHA 2025",
+      "caption": "Runner-up finish at TECH-YODDHA 2025, DKTE.",
+      "image": "./assets/gallery/runnerup.jpeg",
+      "width": 1280,
+      "height": 720
     },
     {
       "id": 4,
-      "title": "Reading",
-      "caption": "One of my reading moments — books on ML and systems.",
-      "image": "./assets/gallery/reading.svg"
+      "title": "Kopeshwar",
+      "caption": "A visit to the Kopeshwar temple.",
+      "image": "./assets/gallery/kopeshwar.jpeg",
+      "width": 720,
+      "height": 1280
     },
     {
       "id": 5,
-      "title": "Hackathon pitch",
-      "caption": "Presenting the weekend build to the judging panel.",
-      "image": "./assets/gallery/pitch.svg"
+      "title": "Rajgad trekking",
+      "caption": "Trekking to Rajgad Fort.",
+      "image": "./assets/gallery/rajgad-trekking.jpeg",
+      "width": 1600,
+      "height": 1200
     },
     {
       "id": 6,
-      "title": "Team lunch",
-      "caption": "The people are the best part of building things.",
-      "image": "./assets/gallery/team-lunch.svg"
+      "title": "IoT project",
+      "caption": "The IoT project we built and demonstrated.",
+      "image": "./assets/gallery/iot.jpeg",
+      "width": 1198,
+      "height": 720
     }
   ],
   "contact": {
-    "email": { "label": "hello@kaushalkalas.dev", "href": "mailto:hello@kaushalkalas.dev" },
+    "email": { "label": "kaushalkalas8825@gmail.com", "href": "mailto:kaushalkalas8825@gmail.com" },
+    
     "github": { "label": "github.com/kaushalkalas", "href": "https://github.com/kaushalkalas" },
     "linkedin": { "label": "linkedin.com/in/kaushalkalas", "href": "https://linkedin.com/in/kaushalkalas" },
-    "x": { "label": "x.com/kaushalkalas", "href": "https://x.com/kaushalkalas" }
+    "x": { "label": "x.com/kaushal_0725", "href": "https://x.com/kaushal_0725" }
   }
 }
